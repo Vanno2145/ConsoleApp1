@@ -1,14 +1,16 @@
 ﻿
 
+using System.Numerics;
+
 namespace ConsoleAPP
 {
     class City
     {
-        private string city_name;
-        private string country_name;
-        private int person_count;
-        private int phone_nums;
-        private string[] regions;
+        private string city_name { get; set; }
+        private string country_name { get; set; }
+        private int person_count { get; set; }
+        private int phone_nums { get; set; }
+        private string[] regions { get; set; }
 
         public City()
         {
@@ -27,52 +29,6 @@ namespace ConsoleAPP
             this.phone_nums = phone_nums;
             this.regions = regions;
         }
-
-        public void InputCityName(string city_name) {
-            this.city_name = city_name;
-        }
-
-        public void InputCountryName(string country_name) {
-            this.country_name = country_name;    
-        }
-
-        public void InputPersonCount(int person_count) { 
-            this.person_count = person_count;
-        }
-
-        public void InputPhoneNums(int phone_nums) { 
-            this.phone_nums = phone_nums;
-        }
-
-        public void InputRegions(string[] regions) { 
-            this.regions = new string[regions.Length];
-
-            for (int i = 0; i < regions.Length; i++) {
-                this.regions[i] = regions[i];
-            }
-        }
-
-        public string GetCityName()
-        {
-            return this.city_name;
-        }
-        public string GetCountryName()
-        {
-            return this.country_name;
-        }
-        public int GetPersonCount()
-        {
-            return (int) this.person_count;
-        }
-        public int GetPhoneNums()
-        {
-            return (int) this.phone_nums;
-        }
-        public string[] GetRegions()
-        {
-            return this.regions;
-        }
-
         public void Print() {
             Console.WriteLine(city_name);
             Console.WriteLine(country_name);
@@ -81,21 +37,45 @@ namespace ConsoleAPP
             Console.WriteLine(regions);
         }
 
+        public static City operator +(City a, int p) { 
+            return new City(a.city_name, a.country_name, a.person_count + p, a.phone_nums, a.regions);
+        }
 
+        public static City operator -(City a, int p)
+        {
+            return new City(a.city_name, a.country_name, a.person_count - p, a.phone_nums, a.regions);
+        }
 
+        public static bool operator ==(City a, City b)
+        {
+            return a.person_count == a.person_count;
+        }
+        public static bool operator !=(City a, City b)
+        {
+            return a.person_count != a.person_count;
+        }
+        public static bool operator >(City a, City b)
+        {
+            return a.person_count > a.person_count;
+        }
+        public static bool operator <(City a, City b)
+        {
+            return a.person_count < a.person_count;
+        }
     }
 
     class Employee
     {
         
-        private string fullName;
-        private DateTime birthDate;
-        private string phone;
-        private string workEmail;
-        private string position;
-        private string jobDescription;
+        private string fullName { get; set; }
+        private DateTime birthDate { get; set; }
+        private string phone { get; set; }
+        private string workEmail { get; set; }
+        private string position { get; set; }
+        private string jobDescription { get; set; }
 
-        
+        private double sallery { get; set; }
+
         public Employee()
         {
             fullName = string.Empty;
@@ -104,10 +84,11 @@ namespace ConsoleAPP
             workEmail = string.Empty;
             position = string.Empty;
             jobDescription = string.Empty;
+            sallery = 0;
         }
 
         
-        public Employee(string fullName, DateTime birthDate, string phone, string workEmail, string position, string jobDescription)
+        public Employee(string fullName, DateTime birthDate, string phone, string workEmail, string position, string jobDescription, double sallery)
         {
             this.fullName = fullName;
             this.birthDate = birthDate;
@@ -115,68 +96,7 @@ namespace ConsoleAPP
             this.workEmail = workEmail;
             this.position = position;
             this.jobDescription = jobDescription;
-        }
-
-        
-        public void InputFullName(string fullName)
-        {
-            this.fullName = fullName;
-        }
-
-        public void InputBirthDate(DateTime birthDate)
-        {
-            this.birthDate = birthDate;
-        }
-
-        public void InputPhone(string phone)
-        {
-            this.phone = phone;
-        }
-
-        public void InputWorkEmail(string workEmail)
-        {
-            this.workEmail = workEmail;
-        }
-
-        public void InputPosition(string position)
-        {
-            this.position = position;
-        }
-
-        public void InputJobDescription(string jobDescription)
-        {
-            this.jobDescription = jobDescription;
-        }
-
-        
-        public string GetFullName()
-        {
-            return this.fullName;
-        }
-
-        public DateTime GetBirthDate()
-        {
-            return this.birthDate;
-        }
-
-        public string GetPhone()
-        {
-            return this.phone;
-        }
-
-        public string GetWorkEmail()
-        {
-            return this.workEmail;
-        }
-
-        public string GetPosition()
-        {
-            return this.position;
-        }
-
-        public string GetJobDescription()
-        {
-            return this.jobDescription;
+            this.sallery = sallery;
         }
 
         
@@ -188,85 +108,32 @@ namespace ConsoleAPP
             Console.WriteLine("Рабочий email: " + workEmail);
             Console.WriteLine("Должность: " + position);
             Console.WriteLine("Описание служебных обязанностей: " + jobDescription);
-        }
-    }
-
-    class Airplane
-    {
-        
-        private string airplaneName;
-        private string manufacturer;
-        private int yearOfManufacture;
-        private string airplaneType;
-
-        
-        public Airplane()
-        {
-            airplaneName = string.Empty;
-            manufacturer = string.Empty;
-            yearOfManufacture = 0;
-            airplaneType = string.Empty;
+            Console.WriteLine("Зарплата: " + sallery);
         }
 
-        
-        public Airplane(string airplaneName, string manufacturer, int yearOfManufacture, string airplaneType)
-        {
-            this.airplaneName = airplaneName;
-            this.manufacturer = manufacturer;
-            this.yearOfManufacture = yearOfManufacture;
-            this.airplaneType = airplaneType;
+        public static Employee operator +(Employee a, double f) {
+            return new Employee(a.fullName, a.birthDate, a.phone, a.workEmail, a.position, a.jobDescription, a.sallery + f);
         }
 
-        
-        public void InputData(string airplaneName)
+        public static Employee operator -(Employee a, double f)
         {
-            this.airplaneName = airplaneName;
+            return new Employee(a.fullName, a.birthDate, a.phone, a.workEmail, a.position, a.jobDescription, a.sallery - f);
         }
 
-        
-        public void InputData(string airplaneName, string manufacturer)
-        {
-            this.airplaneName = airplaneName;
-            this.manufacturer = manufacturer;
+        public static bool operator ==(Employee a, Employee b) { 
+            return a.sallery == b.sallery;
         }
-
-        /
-        public void InputData(string airplaneName, string manufacturer, int yearOfManufacture, string airplaneType)
+        public static bool operator !=(Employee a, Employee b)
         {
-            this.airplaneName = airplaneName;
-            this.manufacturer = manufacturer;
-            this.yearOfManufacture = yearOfManufacture;
-            this.airplaneType = airplaneType;
+            return a.sallery != b.sallery;
         }
-
-        
-        public string GetAirplaneName()
+        public static bool operator >(Employee a, Employee b)
         {
-            return this.airplaneName;
+            return a.sallery > b.sallery;
         }
-
-        public string GetManufacturer()
+        public static bool operator <(Employee a, Employee b)
         {
-            return this.manufacturer;
-        }
-
-        public int GetYearOfManufacture()
-        {
-            return this.yearOfManufacture;
-        }
-
-        public string GetAirplaneType()
-        {
-            return this.airplaneType;
-        }
-
-
-        public void Print()
-        {
-            Console.WriteLine("Название самолёта: " + airplaneName);
-            Console.WriteLine("Производитель: " + manufacturer);
-            Console.WriteLine("Год выпуска: " + yearOfManufacture);
-            Console.WriteLine("Тип самолёта: " + airplaneType);
+            return a.sallery < b.sallery;
         }
     }
 
