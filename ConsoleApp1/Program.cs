@@ -4,136 +4,63 @@ using System.Numerics;
 
 namespace ConsoleAPP
 {
-    class City
-    {
-        private string city_name { get; set; }
-        private string country_name { get; set; }
-        private int person_count { get; set; }
-        private int phone_nums { get; set; }
-        private string[] regions { get; set; }
+    using System;
 
-        public City()
-        {
-            city_name = string.Empty;
-            country_name = string.Empty;
-            person_count = 0;
-            phone_nums = 0;
-            regions = null;
-        }
-
-        public City(string city_name, string country_name, int person_count, int phone_nums, string[] regions)
-        {
-            this.city_name = city_name;
-            this.country_name = country_name;
-            this.person_count = person_count;
-            this.phone_nums = phone_nums;
-            this.regions = regions;
-        }
-        public void Print() {
-            Console.WriteLine(city_name);
-            Console.WriteLine(country_name);
-            Console.WriteLine(person_count);
-            Console.WriteLine(phone_nums);
-            Console.WriteLine(regions);
-        }
-
-        public static City operator +(City a, int p) { 
-            return new City(a.city_name, a.country_name, a.person_count + p, a.phone_nums, a.regions);
-        }
-
-        public static City operator -(City a, int p)
-        {
-            return new City(a.city_name, a.country_name, a.person_count - p, a.phone_nums, a.regions);
-        }
-
-        public static bool operator ==(City a, City b)
-        {
-            return a.person_count == a.person_count;
-        }
-        public static bool operator !=(City a, City b)
-        {
-            return a.person_count != a.person_count;
-        }
-        public static bool operator >(City a, City b)
-        {
-            return a.person_count > a.person_count;
-        }
-        public static bool operator <(City a, City b)
-        {
-            return a.person_count < a.person_count;
-        }
-    }
-
-    class Employee
+    class Backpack
     {
         
-        private string fullName { get; set; }
-        private DateTime birthDate { get; set; }
-        private string phone { get; set; }
-        private string workEmail { get; set; }
-        private string position { get; set; }
-        private string jobDescription { get; set; }
+        public string Color { get; set; }
+        public string Brand { get; set; }
+        public string Fabric { get; set; }
+        public double Weight { get; set; }
+        public double Volume { get; set; }
 
-        private double sallery { get; set; }
+        
+        private string[] itemNames;
+        private double[] itemVolumes;
+        private int itemCount = 0;
+        private double currentVolume = 0;
 
-        public Employee()
+       
+        public event EventHandler<string> ItemAdded;
+
+        
+        public Backpack(int maxItems)
         {
-            fullName = string.Empty;
-            birthDate = DateTime.MinValue;
-            phone = string.Empty;
-            workEmail = string.Empty;
-            position = string.Empty;
-            jobDescription = string.Empty;
-            sallery = 0;
+            itemNames = new string[maxItems];
+            itemVolumes = new double[maxItems];
         }
 
         
-        public Employee(string fullName, DateTime birthDate, string phone, string workEmail, string position, string jobDescription, double sallery)
+        public void AddItem(string name, double itemVolume)
         {
-            this.fullName = fullName;
-            this.birthDate = birthDate;
-            this.phone = phone;
-            this.workEmail = workEmail;
-            this.position = position;
-            this.jobDescription = jobDescription;
-            this.sallery = sallery;
+            if (itemCount >= itemNames.Length)
+            {
+                throw new InvalidOperationException("Рюкзак заполнен: нельзя добавить больше предметов.");
+            }
+
+            if (currentVolume + itemVolume > Volume)
+            {
+                throw new InvalidOperationException("Невозможно добавить объект: недостаточно места в рюкзаке.");
+            }
+
+            itemNames[itemCount] = name;
+            itemVolumes[itemCount] = itemVolume;
+            itemCount++;
+            currentVolume += itemVolume;
+
+           
+            ItemAdded?.Invoke(this, name);
         }
 
         
-        public void Print()
+        public void ShowContents()
         {
-            Console.WriteLine("ФИО: " + fullName);
-            Console.WriteLine("Дата рождения: " + birthDate.ToShortDateString());
-            Console.WriteLine("Телефон: " + phone);
-            Console.WriteLine("Рабочий email: " + workEmail);
-            Console.WriteLine("Должность: " + position);
-            Console.WriteLine("Описание служебных обязанностей: " + jobDescription);
-            Console.WriteLine("Зарплата: " + sallery);
-        }
-
-        public static Employee operator +(Employee a, double f) {
-            return new Employee(a.fullName, a.birthDate, a.phone, a.workEmail, a.position, a.jobDescription, a.sallery + f);
-        }
-
-        public static Employee operator -(Employee a, double f)
-        {
-            return new Employee(a.fullName, a.birthDate, a.phone, a.workEmail, a.position, a.jobDescription, a.sallery - f);
-        }
-
-        public static bool operator ==(Employee a, Employee b) { 
-            return a.sallery == b.sallery;
-        }
-        public static bool operator !=(Employee a, Employee b)
-        {
-            return a.sallery != b.sallery;
-        }
-        public static bool operator >(Employee a, Employee b)
-        {
-            return a.sallery > b.sallery;
-        }
-        public static bool operator <(Employee a, Employee b)
-        {
-            return a.sallery < b.sallery;
+            Console.WriteLine("Содержимое рюкзака:");
+            for (int i = 0; i < itemCount; i++)
+            {
+                Console.WriteLine($"- {itemNames[i]} ({itemVolumes[i]} л)");
+            }
         }
     }
 
@@ -141,7 +68,78 @@ namespace ConsoleAPP
     {
         static void Main(string[] args)
         {
+            Backpack backpack = new Backpack(5) 
+            {
+                Color = "Чёрный",
+                Brand = "Nike",
+                Fabric = "Нейлон",
+                Weight = 1.2,
+                Volume = 30
+            };
+
             
+            backpack.ItemAdded += (sender, itemName) =>
+            {
+                Console.WriteLine($"Предмет \"{itemName}\" добавлен в рюкзак.");
+            };
+
+            try
+            {
+                backpack.AddItem("Бутылка воды", 5);
+                backpack.AddItem("Ноутбук", 15);
+                backpack.AddItem("Книга", 10);
+                backpack.AddItem("Футболка", 2);
+
+              
+                backpack.AddItem("Палатка", 10);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
+
+          
+            backpack.ShowContents();
+
+
+
+            Func<string, string, bool> findword = (text, word) => text.Contains(word);
+
+            
+            string mybook = "Это пример книги, в которой мы ищем слово";
+            string isword= "книга";
+
+            
+            bool find = findword(mybook, isword);
+
+            if (find)
+            {
+                Console.WriteLine("Слово найдено!");
+            }
+            else
+            {
+                Console.WriteLine("Слово не найдено.");
+            }
+
+
+
+            int[] numbers = { -1, 2, 3, -4, 5, -6, 7, 0 };
+
+            
+            Func<int[], int> countPositiveNumbers = arr =>
+            {
+                int count = 0;
+                foreach (var num in arr)
+                {
+                    if (num > 0)
+                        count++;
+                }
+                return count;
+            };
+
+            
+            int positiveCount = countPositiveNumbers(numbers);
+            Console.WriteLine($"Количество положительных чисел: {positiveCount}");
         }
     }
 }
